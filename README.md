@@ -1,6 +1,6 @@
 # RadiomicsOntologyIBSI
-Radiomics Ontology and IBSI radiomics standard reporting
-This is the repository for the radiomics ontology (RO) and the project with IBSI (Image Biomarker Standardization Iniative) for standardized reporting in radiomics computation.
+## Radiomics Ontology and IBSI radiomics standard reporting
+This is the repository for the radiomics ontology (RO) and the project with IBSI (Image Biomarker Standardization Iniative) for standardized reporting in radiomics computation. The aim of the project is to provide the radiomics community with a set of tools and guidlines to improve the actual quality of reporting of radiomics studies. Finally, the projects aims at providing FAIR (Findable Accessible Interoperable Reusable) tools to boost the access and reproducibility of radiomics studies.
 
 In particular, we developed a complete workflow that allows standardizing the reporting of radiomics computations.
 The workflow is composed by the following steps:
