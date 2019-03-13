@@ -9,7 +9,7 @@ The workflow is composed by the following steps:
 3) **D2rq conversion scripts**: these scripts are used to convert from databases to RDF triples, so that row, columns and values in the database are mapped to the concepts and predicates in the ontology. The mapping is made via dedicated scripts based on the D2RQ mapping language (http://d2rq.org/). The results of this output is a set of RDF triples, which express the content of mapped tables, but as FAIR-compliant objects
 4) **Query of RDF triples via Semantic Web**: RDF triples are then made avaialble via the Semantic Web and deoposited on a dedicated SPARQL endpoint. They can be queried using a dedicate language, which is called SPARQL (https://www.w3.org/TR/rdf-sparql-query/). To perform queries, web interfaces (being the SPARQL endpoint hosted on a public IP) such as Blazegraph (https://www.blazegraph.com/) or GraphDb (http://graphdb.ontotext.com/)
 
-In this wiki, we make available all the tools and provide you with a small guide to convert your radiomics studies with our pipeline. 
+In this [wiki](https://github.com/albytrav/RadiomicsOntologyIBSI/wiki), we make available all the tools and provide you with a small guide to convert your radiomics studies with our pipeline. 
 
 
 
