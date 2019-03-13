@@ -1,0 +1,3 @@
+ReSegmentationParameters_name,ReSegmentationRange_min_value,ReSegmentationRange_min_unit,ReSegmentationRange_max_value,ReSegmentationRange_max_unit,OutlierRemoval_threshold
+ReSegmentationParameters_1,-500,HU,400,HU,
+ReSegmentationParameters_2,-500,,400,,

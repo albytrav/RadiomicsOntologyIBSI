@@ -1,0 +1,2 @@
+ROImask_name,ROImask_label,ROItype,ROItype_label,VoxelDimensionX_name,VoxelDimensionY_name,VoxelDimensionZ_name,SegmentationMethod_name
+ROImask_1,GTV-1auto(AB),GTVp,autoAB,VoxelDimension_1,VoxelDimension_1,VoxelDimension_2,SegmentationMethod_1

@@ -1,0 +1,9 @@
+WaveletFilterParameters_name,BasisFunction,WaveletDirection
+WaveletFilter_1,coif1,LLL
+WaveletFilter_2,coif1,LLH
+WaveletFilter_3,coif1,LHL
+WaveletFilter_4,coif1,LHH
+WaveletFilter_5,coif1,HLL
+WaveletFilter_6,coif1,HLH
+WaveletFilter_7,coif1,HHL
+WaveletFilter_8,coif1,HHH

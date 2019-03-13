@@ -1,0 +1,3 @@
+intVolHistParameters_name,intVolHist_MinBound_value,intVolHist_MinBound_unit,intVolHist_MaxBound_value,intVolHist_MaxBound_unit
+intVolHistParameters_1,-500,HU,400,HU
+intVolHistParameters_2,,,,

@@ -1,0 +1,9 @@
+FeatureSpecificParameters_name,morphParameters_name,glcmParameters_name,glrlmParameters_name,gldzmParameters_name,ngtdmParameters_name,ngldmParameters_name,intVolHistParameters_name
+FeatureSpecificParameters_1,morphParameters_1,,,,,,
+FeatureSpecificParameters_2,,,,,,,intVolHistParameters_1
+FeatureSpecificParameters_3,,glcmParameters_1,,,,,
+FeatureSpecificParameters_4,,,glrlmParameters_1,,,,
+FeatureSpecificParameters_5,,,,gldzmParameters_1,,,
+FeatureSpecificParameters_6,,,,,ngtdmParameters_1,,
+FeatureSpecificParameters_7,,,,,,ngldmParameters_1,
+FeatureSpecificParameters_8,,,,,,,intVolHistParameters_2

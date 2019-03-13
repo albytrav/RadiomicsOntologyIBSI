@@ -1,0 +1,9 @@
+InterpolationParameters_name,Value,Unit,ImageVolume_method,ImageVolume_GreyLevelRound_value,ImageVolume_GreyLevelRound_unit,ROImask_method,ROImask_PartialVolumeCutoff_value
+InterpolationParameters_1,2,mm,LIN,1,HU,LIN,0.5
+InterpolationParameters_2,1,mm,LIN,1,HU,LIN,0.5
+InterpolationParameters_3,3,mm,LIN,1,HU,LIN,0.5
+InterpolationParameters_4,4,mm,LIN,1,HU,LIN,0.5
+InterpolationParameters_5,2,mm,LIN,1,,LIN,0.5
+InterpolationParameters_6,1,mm,LIN,1,,LIN,0.5
+InterpolationParameters_7,3,mm,LIN,1,,LIN,0.5
+InterpolationParameters_8,4,mm,LIN,1,,LIN,0.5

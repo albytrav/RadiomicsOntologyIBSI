@@ -1,0 +1,2 @@
+Scan_name,PatientID,Patient_label,ImagingModality,DICOMspace_name
+Scan_1,interobs05,Lung-Multidelineation-005,CT,DICOMspace_1
