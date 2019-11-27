@@ -1,0 +1,149 @@
+### D2RQ MAPPING SCRIPT FOR THE INTVOLHIST PARAMETER TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+#Table INTVOLHIST parameters
+
+map:intvolhistpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "intvolhistpar_@@intvolhisttable.intvolhistpar@@";
+	.
+	
+map:minbound_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "minbound_@@intvolhisttable.intvolhistpar@@";
+	d2rq:class ro:V2QW;
+	.
+	
+map:definepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:intvolhistpar_obj;
+	d2rq:refersToClassMap map:minbound_obj;
+	d2rq:property ro:P00009; #defined_by
+	.
+	
+#value of minbound
+map:minboundvalue a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:minbound_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "intvolhisttable.minboundvalue";
+	d2rq:datatype xsd:double;
+	.
+	
+map:maxbound_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "minbound_@@intvolhisttable.intvolhistpar@@";
+	d2rq:class ro:X6TI;
+	.
+	
+map:definepredicate1 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:intvolhistpar_obj;
+	d2rq:refersToClassMap map:maxbound_obj;
+	d2rq:property ro:P00009; #defined_by
+	.
+	
+#value of maxbound
+map:maxboundvalue a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:maxbound_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "intvolhisttable.maxboundvalue";
+	d2rq:datatype xsd:double;
+	.
+
+#map the concept of minbound unit 
+
+map:minboundunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "intvolhisttable.minboundunit IS NOT NULL";
+	d2rq:uriPattern "minboundunit_@@intvolhisttable.minboundunit@@";
+	.
+
+map:minboundunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:minboundunit_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "intvolhisttable.minboundunit";
+	d2rq:translateWith map:normunitMapping;
+	.
+
+map:normunitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+	
+map:minboundunitpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:minbound_obj;
+	d2rq:refersToClassMap map:minboundunit_obj;
+	d2rq:property ro:P00099; #has_unit 
+	.
+
+#map the concept of maxbound unit 
+
+map:maxboundunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "intvolhisttable.maxboundunit IS NOT NULL";
+	d2rq:uriPattern "maxboundunit_@@intvolhisttable.maxboundunit@@";
+	.
+
+map:maxboundunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:maxboundunit_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "intvolhisttable.maxboundunit";
+	d2rq:translateWith map:normunitMapping1;
+	.
+
+map:normunitMapping1 a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+	
+map:maxboundunitpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:maxbound_obj;
+	d2rq:refersToClassMap map:maxboundunit_obj;
+	d2rq:property ro:P00099; #has_unit 
+	.		
+	
+
+
+	

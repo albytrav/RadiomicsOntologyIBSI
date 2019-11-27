@@ -1,0 +1,82 @@
+### D2RQ MAPPING SCRIPT FOR VOXEL DIMENSION TABLE ####
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+    .
+
+
+map:voxeldimx_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "dimx_@@voxeldimensiontable.dimensionname@@";
+	d2rq:class ro:KBWK;
+	.
+
+# map the predicate has_value
+
+map:valuepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:voxeldimx_obj;
+	d2rq:property roo:100042; #HAS VALUE
+    d2rq:sqlExpression "voxeldimensiontable.dimensionvalue";
+	d2rq:datatype xsd:double;
+    .
+
+# map the concept of unit
+
+map:unit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "unit_@@voxeldimensiontable.dimensionname@@";
+  	.
+
+map:unit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:unit_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "voxeldimensiontable.unit";
+	d2rq:translateWith map:unitMapping;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+map:unitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+  
+
+#mapping the predicate has_unit. It is a D2rq PropertyBridge
+
+
+map:unitpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:voxeldimx_obj;
+    d2rq:property roo:100027; #HAS UNIT
+	d2rq:refersToClassMap map:unit_obj;
+	.
+

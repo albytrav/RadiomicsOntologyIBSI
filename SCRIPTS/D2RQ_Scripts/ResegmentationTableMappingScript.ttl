@@ -1,0 +1,218 @@
+### D2RQ MAPPING SCRIPT FOR THE RESEGMENTATION PARAMETER TABLE ####
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+
+# TABLE RESEGMENTATION
+
+#mapping the concept of resegmentation parameter (SAME URI AS IN FEATURE PARAMETER SPACE TABLE)
+
+map:resegmentationparameter_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "reseg_@@resegmentationtable.resegmentation@@";
+	d2rq:class ro:QP79;
+	.
+
+# mapping the concept of outlier removal
+
+map:outlierremoval_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.outlierremovalthreshold IS NOT NULL";
+	d2rq:uriPattern "outlierremoval_@@resegmentationtable.resegmentation@@";
+	d2rq:class ro:7ACA;
+	.
+
+# mapping the predicate has_outlier_removal
+
+map:outlierremoval_predicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:resegmentationparameter_obj;
+	d2rq:refersToClassMap map:outlierremoval_obj;
+	d2rq:property ro:P984123;
+	.
+
+
+#mapping the predicate outlierremoval has_value
+
+map:outliervalue a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:outlierremoval_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "resegmentationtable.outlierremovalthreshold";
+	d2rq:datatype xsd:double;
+	.
+
+
+# mapping the concept of resegmentation range
+
+
+map:resegmentationrange_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.resegminvalue IS NOT NULL";
+	d2rq:uriPattern "resegmentationrange_@@resegmentationtable.resegmentation@@";
+	d2rq:class ro:USB3;
+	.
+	
+	
+#mapping the predicate has_range
+
+map:hasrange a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:resegmentationparameter_obj;
+	d2rq:refersToClassMap map:resegmentationrange_obj;
+	d2rq:property ro:P923414;
+	.
+
+#mapping the concept of resegmentation range min
+
+map:rangemin_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.resegminvalue IS NOT NULL";
+	d2rq:uriPattern "resegmentationrangemin_@@resegmentationtable.resegminvalue@@"; 
+	d2rq:class ro:5BEO;
+	.
+
+#mapping the predicate has_min
+
+map:rangemin_predicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:resegmentationrange_obj;
+	d2rq:refersToClassMap map:rangemin_obj;
+	d2rq:property ro:P00064; #has_min
+	.
+
+#mapping the predicate min has_value
+
+map:min_value a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:rangemin_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "resegmentationtable.resegminvalue";
+	d2rq:datatype xsd:double;
+	.
+
+#mapping the concept of min range unit
+
+map:minunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.resegminunit IS NOT NULL";
+	d2rq:uriPattern "minunit_@@resegmentationtable.resegminunit@@";
+	.
+
+map:minunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:minunit_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "resegmentationtable.resegminunit";
+	d2rq:translateWith map:unitMapping;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+map:unitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+
+#mapping the predicate has_unit
+
+map:minunitpredicate a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:rangemin_obj;
+    d2rq:property roo:100027; # has_unit
+    d2rq:refersToClassMap map:minunit_obj;
+    .
+
+#mapping the concept of resegmentation range max
+
+map:rangemax_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.resegmaxvalue IS NOT NULL";
+	d2rq:uriPattern "resegmentationrangemax_@@resegmentationtable.resegmaxvalue@@"; 
+	d2rq:class ro:005023;
+	.
+
+#mapping the predicate has_max
+
+map:rangemax_predicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:resegmentationrange_obj;
+	d2rq:refersToClassMap map:rangemax_obj;
+	d2rq:property ro:P00060;
+	.
+
+#mapping the predicate max has_value
+
+map:max_value a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:rangemax_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "resegmentationtable.resegmaxvalue";
+	d2rq:datatype xsd:double;
+	.
+
+#mapping the concept of max range unit
+
+map:maxunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "resegmentationtable.resegmaxunit IS NOT NULL";
+	d2rq:uriPattern "maxunit_@@resegmentationtable.resegmaxunit@@";
+	.
+
+map:maxunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:maxunit_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "resegmentationtable.resegmaxunit";
+	d2rq:translateWith map:unitMapping1;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+map:unitMapping1 a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+
+
+
+#mapping the predicate has_unit
+
+map:maxunitpredicate a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:rangemax_obj;
+    d2rq:property roo:100027; # has_unit
+    d2rq:refersToClassMap map:maxunit_obj;
+    .

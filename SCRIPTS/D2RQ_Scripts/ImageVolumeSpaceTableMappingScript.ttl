@@ -1,0 +1,132 @@
+## MAPPING SCRIPT FOR IMAGE VOLUME TABLE
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+# Table image volume
+
+
+# mapping the concept of Image Volume  (SAME URI AS IMAGE SPACE TABLE)
+
+
+
+map:imagevolume_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "imagevolume_@@volumespacetable.imagevolume@@";
+	d2rq:class ro:KZBL; #imagevolume
+	.
+
+# mapping image volume label
+
+map:imagevolume_label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:property rdfs:label;
+	d2rq:pattern "imagevolume #@@volumespacetable.imagevolumelabel@@";
+	d2rq:datatype xsd:String
+	.
+
+#mapping the concept of voxel dimension X
+
+map:voxeldimx_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "dimx_@@volumespacetable.dimensionx@@";
+	d2rq:class ro:KBWK;
+	.
+
+
+#mapping the concept of voxel dimension Y
+
+map:voxeldimy_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "dimy_@@volumespacetable.dimensiony@@";
+	d2rq:class ro:Z231;
+    .
+
+#mapping the concept of voxel dimension Z
+
+map:voxeldimz_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "dimx_@@volumespacetable.dimensionz@@";
+	d2rq:class ro:XLB5;
+	.
+
+# predicate between image volume and voxeldimx 
+
+
+map:hasdimx a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:voxeldimx_obj;
+	d2rq:property ro:P00118; 
+	.
+
+# predicate between image volume and voxeldimy 
+
+
+map:hasdimy a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:voxeldimy_obj;
+	d2rq:property ro:P00123;
+	.
+
+# predicate between image volume and voxeldimz 
+
+map:hasdimz a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:voxeldimz_obj;
+	d2rq:property ro:P00149;
+	.
+
+
+# mapping the concept of scan
+
+map:scan_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "scan_@@volumespacetable.scan@@";
+	d2rq:class ncit:C17999;
+	.
+
+
+# mapping predicate between image volume and scan (extracted_from)
+
+map:extracted a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:scan_obj;
+	d2rq:property ro:P00019;
+	.
+
+# mapping the concept of post processing
+
+map:postprocessing_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "volumespacetable.postprocessing IS NOT NULL";
+	d2rq:uriPattern "postprocessing_@@volumespacetable.postprocessing@@";
+	d2rq:class ro:PCDE;
+	.
+	
+#mapping predicate between image volume and post processing
+
+map:processing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:postprocessing_obj;
+	d2rq:property ro:P00080; #has_processing
+	.
+
+

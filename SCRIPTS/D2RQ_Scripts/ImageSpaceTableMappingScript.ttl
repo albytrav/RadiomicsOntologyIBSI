@@ -1,0 +1,67 @@
+## MAPPING SCRIPT FOR IMAGE SPACE TABLE
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+# Table image space
+
+# mapping the concept of Image Space  (SAME URI AS FEATURE TABLE)
+
+map:imagespace_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "imagespace_@@imagespacetable.imagespacename@@";
+	d2rq:class ro:OB71; #imagespace
+    .
+	
+# mapping the concept of Image Volume
+
+map:imagevolume_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "imagevolume_@@imagespacetable.imagevolume@@";
+	d2rq:class ro:KZBL; #imagevolume
+	.
+
+#mapping the predicate between image space and image volume
+
+map:containvolume a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagespace_obj;
+	d2rq:refersToClassMap map:imagevolume_obj;
+	d2rq:property ro:P00006; #contains
+	.
+
+# mapping the concept of ROI Mask
+
+map:roimask_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "roimask_@@imagespacetable.roimask@@";
+	d2rq:class ro:OH8W; #roimask
+	.
+
+#mapping the predicate between image volume and ROI mask
+
+map:containmask a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolume_obj;
+	d2rq:refersToClassMap map:roimask_obj;
+	d2rq:property ro:P00006; #contains
+	.
+
+
+

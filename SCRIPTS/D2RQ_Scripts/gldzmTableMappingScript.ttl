@@ -1,0 +1,96 @@
+### D2RQ MAPPING SCRIPT FOR THE GLDZM PARAMETER TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+#Table GLDZM parameters
+
+map:gldzmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "gldzmpar_@@gldzmtable.gldzmpar@@";
+	.
+
+map:distance_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "gldzmdistance_@@gldzmtable.distancemethod@@";
+	.
+
+map:distance_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:distance_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "gldzmtable.distancemethod";
+	d2rq:translateWith map:distanceMapping;
+	.
+
+map:distanceMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "Chebyshev"; d2rq:rdfValue ro:PVMT; ];
+	d2rq:translation [ d2rq:databaseValue "Euclidean"; d2rq:rdfValue ro:G9EV; ];
+	d2rq:translation [ d2rq:databaseValue "Manhattan"; d2rq:rdfValue ro:LIFZ; ];
+	.
+
+
+map:definedistance a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:gldzmpar_obj;
+	d2rq:refersToClassMap map:distance_obj;
+	d2rq:property ro:P00009;
+	.
+
+
+map:normvalue a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:distance_obj;
+	d2rq:property roo:100042; #has_value
+	d2rq:sqlExpression "gldzmtable.distancevalue";
+	d2rq:datatype xsd:double;
+	.
+
+#map the concept of unit
+
+map:normunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "gldzmtable.distanceunit IS NOT NULL";
+	d2rq:uriPattern "normunit_@@gldzmtable.distanceunit@@";
+	.
+
+map:normunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:normunit_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "gldzmtable.distanceunit";
+	d2rq:translateWith map:normunitMapping;
+	.
+
+
+map:normunitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    .
+
+map:unitnorm a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:distance_obj;
+	d2rq:refersToClassMap map:normunit_obj;
+	d2rq:property ro:P00099; 
+	.
+
+

@@ -1,0 +1,44 @@
+### D2RQ MAPPING SCRIPT FOR FILTER SPACE TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+map:filterspace_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.filtername IS NOT NULL";
+	d2rq:uriPattern "filterspace_@@imagefilterspacetable.filterspace@@";
+	d2rq:class ro:JCNR;
+	.
+	
+map:waveletpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "waveletpar_@@imagefilterspacetable.waveletfilterpar@@";
+	d2rq:class ro:KK90;
+	.
+
+map:definedby a d2rq:PropertyBridge;
+	map:belongsToClassMap map:filterspace_obj;
+	map:refersToClassMap map:waveletpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+
+	

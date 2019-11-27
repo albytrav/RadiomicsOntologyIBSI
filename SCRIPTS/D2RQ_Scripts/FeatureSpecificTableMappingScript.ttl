@@ -1,0 +1,139 @@
+### D2RQ MAPPING SCRIPT FOR THE FEATURE SPECIFIC PARAMETER TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+    .
+
+#Table feature specific parameters
+
+#mapping the concept of feature specific parameter space (SAME URI AS IN FEATURE PARAMETER SPACE TABLE)
+
+map:featurespec_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "featurespecific_@@featurespecifictable.featurespecific@@";
+	d2rq:class ro:OWOH;
+    .
+
+#mapping the concept of morphological specific parameter
+
+map:morphpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "morphpar_@@featurespecifictable.morphpar@@";
+    d2rq:condition "featurespecifictable.morphpar IS NOT NULL";
+	d2rq:class ro:FFWD;
+    .
+
+#mapping the concept of int vol specific parameter
+
+map:intvolhistpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "featurespecifictable.intvolhistpar IS NOT NULL";
+	d2rq:uriPattern "intvolhistpar_@@featurespecifictable.intvolhistpar@@";
+    d2rq:class ro:KQW7;
+	.
+
+#mapping the concept of glcm specific parameter
+
+map:glcmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "glcmpar_@@featurespecifictable.glcmpar@@";
+    d2rq:condition "featurespecifictable.glcmpar IS NOT NULL";
+    d2rq:class ro:4S5Z;
+        .
+
+#mapping the concept of glrlm specific parameter
+
+map:glrlmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "featurespecifictable.glrlmpar IS NOT NULL";
+	d2rq:uriPattern "glrlmpar_@@featurespecifictable.glrlmpar@@";
+    d2rq:class ro:0OW5;
+	.
+
+#mapping the concept of gldzm specific parameter
+
+map:gldzmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "featurespecifictable.gldzmpar IS NOT NULL";
+	d2rq:uriPattern "gldzmpar_@@featurespecifictable.gldzmpar@@";
+    d2rq:class ro:6SLW;
+    .
+
+#mapping the concept of ngtdm specific parameter
+ 
+map:ngtdmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "featurespecifictable.ngtdmpar IS NOT NULL";
+	d2rq:uriPattern "ngtdmpar_@@featurespecifictable.ngtdmpar@@";
+    d2rq:class ro:MV8M;
+    .
+
+#mapping the concept of ngldm specific parameter
+
+map:ngldmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+    d2rq:condition "featurespecifictable.ngldmpar IS NOT NULL";
+	d2rq:uriPattern "ngldmpar_@@featurespecifictable.ngldmpar@@";
+	d2rq:class ro:IJAQ;
+    .
+
+map:defined_by a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:morphpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+map:defined_by1 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:intvolhistpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+	
+map:defined_by2 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:glcmpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+
+map:defined_by3 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:glrlmpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+map:defined_by4 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:gldzmpar_obj;
+	d2rq:property ro:P00009;
+	.	
+
+map:defined_by5 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:ngtdmpar_obj;
+	d2rq:property ro:P00009;
+	.
+
+map:defined_by6 a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:featurespec_obj;
+	d2rq:refersToClassMap map:ngldmpar_obj;
+	d2rq:property ro:P00009;
+	.	

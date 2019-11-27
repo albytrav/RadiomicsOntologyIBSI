@@ -1,0 +1,62 @@
+## MAPPING SCRIPT FOR SEGMENTATION METHOD TABLE
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+# Table SEGMENTATION METHOD
+
+# mapping the concept of segmentation method  (SAME URI AS ROI MASK TABLE)
+
+map:segmentation_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "segmentation_@@segmentationtable.segmentation@@";
+	.
+
+
+# mapping the concept of segmentation method
+
+map:segmethod_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "segmethod_@@segmentationtable.segmethod@@";
+    d2rq:class ro:LBTE;
+	.
+
+map:segmethod_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:segmethod_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "segmentationtable.segmethod";
+	d2rq:translateWith map:segmethodMapping;
+	.
+
+map:segmethodMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "InPolygon"; d2rq:rdfValue ro:O568; ];
+	d2rq:translation [ d2rq:databaseValue "RegionGrowing"; d2rq:rdfValue ro:O226; ];
+	d2rq:translation [ d2rq:databaseValue "CMeansFuzzy"; d2rq:rdfValue ro:O875; ];
+	d2rq:translation [ d2rq:databaseValue "AtlasModel"; d2rq:rdfValue ro:O221; ];
+	d2rq:translation [ d2rq:databaseValue "DeepLearning"; d2rq:rdfValue ro:O948;];
+	d2rq:translation [ d2rq:databaseValue "RayCasting"; d2rq:rdfValue ro:O543;];
+	.
+
+map:hassegmmethod a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:segmentation_obj;
+    d2rq:refersToClassMap map:segmethod_obj;
+    d2rq:property ro:P00092;
+    .

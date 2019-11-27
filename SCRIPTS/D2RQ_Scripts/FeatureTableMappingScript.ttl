@@ -1,0 +1,356 @@
+### D2RQ MAPPING SCRIPT FOR THE FEATURE TABLE ####
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+@prefix uo:<http://purl.obolibrary.org/obo/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+#Table radiomics features
+
+# mapping the concept of patient (SAME AS TABLE FROM CLINICAL DATA)
+
+map:patient_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "patient_@@featuretable.patientid@@";
+	d2rq:class ncit:C16960; #concept imported from NCIT ontology
+	.
+
+# mapping patient label
+
+map:patient_label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:patient_obj;
+	d2rq:property rdfs:label;
+	d2rq:pattern "patient #@@featuretable.patientlabel@@";
+	d2rq:datatype xsd:String
+	.
+
+# mapping the feature object
+
+
+map:feature_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "feature_@@featuretable.featurename@@_@@featuretable.patientid@@";
+	.
+
+#we define a property bridge to map features to the names in the table
+
+map:feature_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:feature_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "featuretable.featurename";
+	d2rq:translateWith map:featureMapping;
+	.
+
+#mapping the translations between feature names and concept in the ontology
+
+map:featureMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "Fmorph.vol"; d2rq:rdfValue ro:RNU0;			];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.approx.vol"; d2rq:rdfValue ro:YEKZ;		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.area"; d2rq:rdfValue ro:C0JK; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.av"; d2rq:rdfValue ro:2PR5; 			];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.comp.1"; d2rq:rdfValue ro:SKGS; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.comp.2"; d2rq:rdfValue ro:BQWJ; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.sph.dispr"; d2rq:rdfValue ro:KRCK; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.sph.sphericity"; d2rq:rdfValue ro:QCFX; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.sph.asph"; d2rq:rdfValue ro:25C7; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.com"; d2rq:rdfValue ro:KLMA; 			];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.diam"; d2rq:rdfValue ro:L0JK; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pca.major"; d2rq:rdfValue ro:TDIC; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pca.minor"; d2rq:rdfValue ro:P9VJ; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pca.least"; d2rq:rdfValue ro:7J51; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pca.elongation"; d2rq:rdfValue ro:Q3CK; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pca.flatness"; d2rq:rdfValue ro:N17B; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.v.dens.aabb"; d2rq:rdfValue ro:PBX1; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.a.dens.aabb"; d2rq:rdfValue ro:R59B; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.v.dens.ombb"; d2rq:rdfValue ro:ZH1A; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.a.dens.ombb"; d2rq:rdfValue ro:IQYR; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.v.dens.aee"; d2rq:rdfValue ro:6BDE; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.a.dens.aee"; d2rq:rdfValue ro:RDD2; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.v.dens.mvee"; d2rq:rdfValue ro:SWZ1; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.a.dens.mvee"; d2rq:rdfValue ro:BRI8; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.v.dens.conv.hull"; d2rq:rdfValue ro:R3ER; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.a.dens.conv.hull"; d2rq:rdfValue ro:BRI8; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.integ.int"; d2rq:rdfValue ro:99N0; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.moran.i"; d2rq:rdfValue ro:N365; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.geary.c"; d2rq:rdfValue ro:NPT7; 		];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pyrad.diam.max2Dslice"; d2rq:rdfValue ro:4S59;	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pyrad.diam.max2Dcolumn"; d2rq:rdfValue ro:5ABU; 	];
+    d2rq:translation [ d2rq:databaseValue "Fmorph.pyrad.diam.max2Drow"; d2rq:rdfValue ro:9SCJ; 		];
+    d2rq:translation [ d2rq:databaseValue "Floc.peak.local"; d2rq:rdfValue ro:VJGA;   			];
+    d2rq:translation [ d2rq:databaseValue "Floc.peak.global"; d2rq:rdfValue ro:0F91; 			];
+    d2rq:translation [ d2rq:databaseValue "Fstat.mean"; d2rq:rdfValue ro:Q4LE; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.var"; d2rq:rdfValue ro:ECT3; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.skew"; d2rq:rdfValue ro:KE2A; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.kurt"; d2rq:rdfValue ro:IPH6; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.median"; d2rq:rdfValue ro:Y12H; 			];
+    d2rq:translation [ d2rq:databaseValue "Fstat.min"; d2rq:rdfValue ro:1GSF; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.P10"; d2rq:rdfValue ro:QG58; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.P90"; d2rq:rdfValue ro:8DWT; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.max"; d2rq:rdfValue ro:84IY; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.iqr"; d2rq:rdfValue ro:SALO; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.range"; d2rq:rdfValue ro:2OJQ; 			];
+    d2rq:translation [ d2rq:databaseValue "Fstat.mad"; d2rq:rdfValue ro:4FUA; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.rmad"; d2rq:rdfValue ro:1128; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.medad"; d2rq:rdfValue ro:N72L; 			];
+    d2rq:translation [ d2rq:databaseValue "Fstat.cov"; d2rq:rdfValue ro:7TET; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.qcod"; d2rq:rdfValue ro:9S40; 				];
+    d2rq:translation [ d2rq:databaseValue "Fstat.energy"; d2rq:rdfValue ro:N8CA; 			];
+    d2rq:translation [ d2rq:databaseValue "Fstat.pyrad.totalenergy"; d2rq:rdfValue ro:URTB; 		];
+    d2rq:translation [ d2rq:databaseValue "Fstat.rms"; d2rq:rdfValue ro:5ZWQ; 	   			];
+    d2rq:translation [ d2rq:databaseValue "Fih.mean"; d2rq:rdfValue ro:X6K6; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.var"; d2rq:rdfValue ro:CH89; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.skew"; d2rq:rdfValue ro:88K1;				];
+    d2rq:translation [ d2rq:databaseValue "Fih.kurt"; d2rq:rdfValue ro:C3I7; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.median"; d2rq:rdfValue ro:WIFQ; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.min"; d2rq:rdfValue ro:1PR8; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.P10"; d2rq:rdfValue ro:GPMT; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.P90"; d2rq:rdfValue ro:OZ0C; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.max"; d2rq:rdfValue ro:3NCY; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.mode"; d2rq:rdfValue ro:AMMC; 				];
+    d2rq:translation [ d2rq:databaseValue "Fih.iqr"; d2rq:rdfValue ro:WR0O; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.range"; d2rq:rdfValue ro:5Z3W; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.mad"; d2rq:rdfValue ro:D2ZX; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.rmad"; d2rq:rdfValue ro:WRZB; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.medad"; d2rq:rdfValue ro:4RNL; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.cov"; d2rq:rdfValue ro:CWYJ; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.qcod"; d2rq:rdfValue ro:SLWD; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.entropy"; d2rq:rdfValue ro:TLU2; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.uniformity"; d2rq:rdfValue ro:BJ5W; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.max.grad"; d2rq:rdfValue ro:12CE; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.max.grad.gl"; d2rq:rdfValue ro:8E6O; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.min.grad"; d2rq:rdfValue ro:VQB3; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.min.grad.gl"; d2rq:rdfValue ro:RHQZ; ];
+    d2rq:translation [ d2rq:databaseValue "Fih.pyrad.std"; d2rq:rdfValue ro:GF95; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.V10"; d2rq:rdfValue ro:8WT9; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.V90"; d2rq:rdfValue ro:0PPY; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.I10"; d2rq:rdfValue ro:UWA7; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.I90"; d2rq:rdfValue ro:WBIZ; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.V10minusV90"; d2rq:rdfValue ro:SOIR; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.I10minusI90"; d2rq:rdfValue ro:EGSX; ];
+    d2rq:translation [ d2rq:databaseValue "Fivh.auc"; d2rq:rdfValue ro:9CMM; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.joint.max"; d2rq:rdfValue ro:GYBY; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.joint.avg"; d2rq:rdfValue ro:60VM; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.joint.var"; d2rq:rdfValue ro:UR99; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.joint.entr"; d2rq:rdfValue ro:TU9B; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.diff.avg"; d2rq:rdfValue ro:TF7R; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.diff.var"; d2rq:rdfValue ro:D3YU; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.diff.entr"; d2rq:rdfValue ro:NTRS; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.avg"; d2rq:rdfValue ro:ZGXS; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.var"; d2rq:rdfValue ro:OEEB; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.entr"; d2rq:rdfValue ro:P6QZ; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.energy"; d2rq:rdfValue ro:8ZQL; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.contrast"; d2rq:rdfValue ro:ACUI; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.sum.dissimilarity"; d2rq:rdfValue ro:8S9J; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.inv.diff"; d2rq:rdfValue ro:IB1Z; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.inv.diff.norm"; d2rq:rdfValue ro:NDRX; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.inv.diff.mom"; d2rq:rdfValue ro:WF0Z; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.inv.diff.mom.norm"; d2rq:rdfValue ro:1QCO; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.inv.var"; d2rq:rdfValue ro:E8JP; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.corr"; d2rq:rdfValue ro:NI2N; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.auto.corr"; d2rq:rdfValue ro:QWB0; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.clust.tend"; d2rq:rdfValue ro:DG8W; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.clust.shade"; d2rq:rdfValue ro:7NFM; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.clust.prom"; d2rq:rdfValue ro:AE86; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.info.corr.1"; d2rq:rdfValue ro:R8DG; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.info.corr.2"; d2rq:rdfValue ro:JN9H; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.pyrad.hom1"; d2rq:rdfValue ro:26200; ];
+    d2rq:translation [ d2rq:databaseValue "Fcm.pyrad.hom2"; d2rq:rdfValue ro:26201; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.sre"; d2rq:rdfValue ro:22OV; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.lre"; d2rq:rdfValue ro:W4KF; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.lgre"; d2rq:rdfValue ro:V3SW; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.hgre"; d2rq:rdfValue ro:G3QZ; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.srlge"; d2rq:rdfValue ro:HTZT; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.srhge"; d2rq:rdfValue ro:GD3A; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.lrlge"; d2rq:rdfValue ro:IVPO; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.lrhge"; d2rq:rdfValue ro:3KUM; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.glnu"; d2rq:rdfValue ro:R5YN; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.glnu.norm"; d2rq:rdfValue ro:OVBL; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.rlnu"; d2rq:rdfValue ro:W92Y; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.rlnu.norm"; d2rq:rdfValue ro:IC23; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.r.perc"; d2rq:rdfValue ro:9ZK5; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.gl.var"; d2rq:rdfValue ro:8CE5; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.rl.var"; d2rq:rdfValue ro:SXLW; ];
+    d2rq:translation [ d2rq:databaseValue "Frlm.rl.entr"; d2rq:rdfValue ro:HJ9O; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.sze"; d2rq:rdfValue ro:GU8N; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.lze"; d2rq:rdfValue ro:48P8; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.lgze"; d2rq:rdfValue ro:XMSY; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.hgze"; d2rq:rdfValue ro:5GN9; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.szlge"; d2rq:rdfValue ro:5RAI; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.szhge"; d2rq:rdfValue ro:HW1V; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.lzlge"; d2rq:rdfValue ro:YH51; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.lzhge"; d2rq:rdfValue ro:0130; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.glnu"; d2rq:rdfValue ro:0131; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.glnu.norm"; d2rq:rdfValue ro:Y1RO; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.zlnu"; d2rq:rdfValue ro:4JP3; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.zlnu.norm"; d2rq:rdfValue ro:VB3A; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.z.perc"; d2rq:rdfValue ro:P30P; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.gl.var"; d2rq:rdfValue ro:BYLV; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.zs.var"; d2rq:rdfValue ro:3NSA; ];
+    d2rq:translation [ d2rq:databaseValue "Fszm.zs.entr"; d2rq:rdfValue ro:GU8N; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.sde"; d2rq:rdfValue ro:0GBI; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.lde"; d2rq:rdfValue ro:MB4I; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.lgze"; d2rq:rdfValue ro:S1RA; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.hgze"; d2rq:rdfValue ro:K26C; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.sdlge"; d2rq:rdfValue ro:RUVG; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.sdhge"; d2rq:rdfValue ro:DKNJ; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.ldlge"; d2rq:rdfValue ro:A7WM; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.ldhge"; d2rq:rdfValue ro:KLTH; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.glnu"; d2rq:rdfValue ro:VFT7; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.glnu.norm"; d2rq:rdfValue ro:7HP3; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.zdnu"; d2rq:rdfValue ro:V294; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.zdnu.norm"; d2rq:rdfValue ro:IATH; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.z.perc"; d2rq:rdfValue ro:VIWW; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.gl.var"; d2rq:rdfValue ro:QK93; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.zd.var"; d2rq:rdfValue ro:VIWW; ];
+    d2rq:translation [ d2rq:databaseValue "Fdzm.zd.entr"; d2rq:rdfValue ro:GBDU; ];
+    d2rq:translation [ d2rq:databaseValue "Fngt.coarseness"; d2rq:rdfValue ro:QCDE; ];
+    d2rq:translation [ d2rq:databaseValue "Fngt.contrast"; d2rq:rdfValue ro:65HE; ];
+    d2rq:translation [ d2rq:databaseValue "Fngt.busyness"; d2rq:rdfValue ro:NQ30; ];
+    d2rq:translation [ d2rq:databaseValue "Fntg.complexity"; d2rq:rdfValue ro:HDEZ; ];
+    d2rq:translation [ d2rq:databaseValue "Fngt.strength"; d2rq:rdfValue ro:1X9X; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.lde"; d2rq:rdfValue ro:SODN; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.hde"; d2rq:rdfValue ro:IMOQ; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.lgce"; d2rq:rdfValue ro:TL9H; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.hgce"; d2rq:rdfValue ro:OAE7; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.ldlge"; d2rq:rdfValue ro:EQ3F; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.ldhge"; d2rq:rdfValue ro:JA6D; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.hdlge"; d2rq:rdfValue ro:NBZI; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.hdhge"; d2rq:rdfValue ro:9QMG; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.glnu"; d2rq:rdfValue ro:FP8K; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.glnu.norm"; d2rq:rdfValue ro:5SPA; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dcnu"; d2rq:rdfValue ro:Z87G; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dcnu.norm"; d2rq:rdfValue ro:OKJI; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dc.perc"; d2rq:rdfValue ro:6XV8; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.gl.var"; d2rq:rdfValue ro:1PFV; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dc.var"; d2rq:rdfValue ro:DNX2; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dc.entr"; d2rq:rdfValue ro:FCBV; ];
+    d2rq:translation [ d2rq:databaseValue "Fngl.dc.energy"; d2rq:rdfValue ro:CAS9; ];
+    .
+
+
+
+#map the predicate has_radiomics_feature (from patient to radiomic features)
+
+map:hasfeaturepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:patient_obj;
+	d2rq:refersToClassMap map:feature_obj;
+	d2rq:property ro:P00088
+	.
+
+#map the predicate has_value (feature has_value value). it is a D2rq PropertyBridge
+
+map:valuepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:feature_obj;
+	d2rq:property roo:100042; #has_value
+    d2rq:sqlExpression "featuretable.featurevalue";
+	d2rq:datatype xsd:double;
+    .
+
+#map the concept of unit
+
+map:unit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featuretable.unit IS NOT NULL";
+	d2rq:uriPattern "unit_@@featuretable.unit@@";
+	.
+
+map:unit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:unit_obj;
+	d2rq:property rdf:type;
+  d2rq:uriColumn "featuretable.unit";
+	d2rq:translateWith map:unitMapping;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+map:unitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135;   ];
+    d2rq:translation [ d2rq:databaseValue "HU(3)"; d2rq:rdfValue ro:I9826512313;   ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213;	   ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683;	   ];
+    d2rq:translation [ d2rq:databaseValue "SUV(3)"; d2rq:rdfValue ro:I0883245;     ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I012395813; ];
+
+.
+
+#mapping the predicate feature has_unit. It is a D2rq PropertyBridge
+
+
+map:unitpredicate a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:feature_obj;
+    d2rq:property roo:100027; # has_unit
+    d2rq:refersToClassMap map:unit_obj;
+    .
+
+#mapping the concept of calculation run (Same URI as in the calculation run mapping script)
+
+map:calculationrun_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "calculationrun_@@featuretable.calculationrunspace@@";
+	d2rq:class ro:GFJV;
+	.
+
+# mapping the predicate computed_using (radiomicsfeature computed_using calculation_run)
+
+map:calculationpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:feature_obj;
+	d2rq:property ro:P00002; #computed using
+	d2rq:refersToClassMap map:calculationrun_obj;
+	.
+
+#mapping the concept of feature parameter space
+
+map:featureparameterspace_obj a d2rq:ClassMap;
+    d2rq:dataStorage map:database;
+	d2rq:uriPattern "featurespace_@@featuretable.featureparameterspace@@";
+	d2rq:class ro:CINW;
+	.
+
+# mapping the predicate has_feature_space (radiomicsfeature has_featurespace featureparameterspace)
+
+map:featurespacepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:feature_obj;
+	d2rq:property ro:P00578; #has_featurespace
+	d2rq:refersToClassMap map:featureparameterspace_obj
+	.
+
+#mapping the concept of image space
+
+map:imagespace_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "imagespace_@@featuretable.imagespacename@@";
+	d2rq:class ro:OB71;
+        .
+
+#mapping the predicate has_imagespace (radiomicsfeature has_imagespace imagespace)
+
+map:imagespacepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:feature_obj;
+	d2rq:property ro:P01579; #has_imagespace
+	d2rq:refersToClassMap map:imagespace_obj;
+ 	.

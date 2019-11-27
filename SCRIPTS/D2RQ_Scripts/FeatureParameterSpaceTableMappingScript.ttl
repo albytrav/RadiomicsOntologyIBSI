@@ -1,0 +1,154 @@
+### D2RQ MAPPING SCRIPT FOR THE FEATURE PARAMETER SPACE TABLE ####
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+#Table feature parameter space
+
+#mapping the concept of feature parameter space (SAME URI AS IN FEATURE TABLE)
+
+map:featureparameterspace_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "featurespace_@@featureparameterspacetable.featureparameterspace@@";
+	d2rq:class ro:CINW;
+	.
+
+
+
+#mapping the concept of aggregation parameters
+
+map:aggrparameter_obj a d2rq:ClassMap;
+    d2rq:dataStorage map:database;	
+	d2rq:uriPattern "aggregration_@@featureparameterspacetable.aggregationparameter@@";
+	.
+
+map:aggrparameter_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:aggrparameter_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "featureparameterspacetable.aggregationparameter";
+	d2rq:translateWith map:aggrMapping;
+	.
+
+map:aggrMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "3D"; d2rq:rdfValue ro:KOBO; ];
+	d2rq:translation [ d2rq:databaseValue "2.5D"; d2rq:rdfValue ro:62GR; ];
+	d2rq:translation [ d2rq:databaseValue "2D"; d2rq:rdfValue ro:3IDG; ];
+	d2rq:translation [ d2rq:databaseValue "2Davg"; d2rq:rdfValue ro:BTW3; ];
+	d2rq:translation [ d2rq:databaseValue "2.5Davg"; d2rq:rdfValue ro:JJUI; ];
+	d2rq:translation [ d2rq:databaseValue "2Dmrg"; d2rq:rdfValue ro:SUJT; ];
+    d2rq:translation [ d2rq:databaseValue "2.5Dmrg"; d2rq:rdfValue ro:7W7Z; ];
+	d2rq:translation [ d2rq:databaseValue "3Davg"; d2rq:rdfValue ro:ITBB; ];
+	d2rq:translation [ d2rq:databaseValue "3Dmrg"; d2rq:rdfValue ro:IAZD; ];
+	.
+
+
+#predicate between aggregation and feature parameter space
+
+map:aggrpredicat a d2rq:PropertyBridge;
+       d2rq:belongsToClassMap map:featureparameterspace_obj;
+       d2rq:refersToClassMap map:aggrparameter_obj;
+       d2rq:property ro:P00009; #defined_by
+       .
+
+
+
+map:filterspace_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.filtername IS NOT NULL";
+	d2rq:uriPattern "filterspace_@@featureparameterspacetable.filtername@@";
+	d2rq:class ro:JCNR;
+	.
+
+#predicate between filter and feature parameter space
+
+map:filterpredicat a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:featureparameterspace_obj;
+    d2rq:refersToClassMap map:filterspace_obj;
+    d2rq:property ro:P00009; #defined_by
+    .
+	
+map:interpolation_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.interpolation IS NOT NULL";
+	d2rq:uriPattern "interpolation_@@featureparameterspacetable.interpolation@@";
+	d2rq:class ro:VTM2;
+	.
+
+#predicate between interpolation and feature parameter space
+
+map:interpolationpredicat a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:featureparameterspace_obj;
+	d2rq:refersToClassMap map:interpolation_obj;
+    d2rq:property ro:P00009; #defined_by
+    .
+
+
+map:reseg_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.resegmentation IS NOT NULL";
+	d2rq:uriPattern "reseg_@@featureparameterspacetable.resegmentation@@";
+	d2rq:class ro:QP79;
+	.
+
+#predicate between resegmentation and feature parameter space
+
+map:resegpredicat a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:featureparameterspace_obj;
+	d2rq:refersToClassMap map:reseg_obj;
+    d2rq:property ro:P00009; #defined_by
+    .
+
+
+map:discr_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.discretization IS NOT NULL";
+	d2rq:uriPattern "discretization_@@featureparameterspacetable.discretization@@";
+    d2rq:class ro:8QU8;	
+	.
+
+
+#predicate between discretization and feature parameter space
+
+map:discrpredicat a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:featureparameterspace_obj;
+	d2rq:refersToClassMap map:discr_obj;
+    d2rq:property ro:P00009; #defined_by
+    .
+
+
+
+map:featurespec_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:condition "featureparameterspacetable.featurespecific IS NOT NULL";
+	d2rq:uriPattern "featurespecific_@@featureparameterspacetable.featurespecific@@";
+	d2rq:class ro:OWOH;
+	.
+
+#predicate between featurespecific and feature parameter space
+
+map:fspecpredicat a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:featureparameterspace_obj;
+	d2rq:refersToClassMap map:featurespec_obj;
+    d2rq:property ro:P00009; #defined_by
+    .
+
+
+

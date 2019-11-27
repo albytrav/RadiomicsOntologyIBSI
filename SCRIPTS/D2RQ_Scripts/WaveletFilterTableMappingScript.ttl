@@ -1,0 +1,98 @@
+### D2RQ MAPPING SCRIPT FOR WAVELET FILTER PARAMETERS TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+    	.
+
+
+#Table wavelet parameters
+
+#mapping the concept of image filter space (SAME URI AS IN FILTER SPACE TABLE)
+
+map:filterparam_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "filterspace_@@waveletfiltertable.waveletfilterpar@@";
+	d2rq:class ro:JCNR; 
+    .
+
+#mapping the concept of basis function
+
+map:basisfunction_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "basisfunction_@@waveletfiltertable.waveletfilterpar@@";
+	.
+
+map:basisfunction_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:basisfunction_obj;
+	d2rq:property rdf:type;
+    d2rq:uriColumn "waveletfiltertable.basisfunction";
+	d2rq:translateWith map:functionMapping;
+	.
+
+map:functionMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "haar"; d2rq:rdfValue ro:FR3E;			];
+    d2rq:translation [ d2rq:databaseValue "coif1"; d2rq:rdfValue ro:2CYL;		];
+    d2rq:translation [ d2rq:databaseValue "bior3.5"; d2rq:rdfValue ro:QVI9; 		];
+    .
+
+
+# predicate has_basis_function
+
+map:has_basisfunction a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:filterparam_obj;
+	d2rq:refersToClassMap map:basisfunction_obj;
+	d2rq:property ro:P00019;
+	.
+
+# mapping the concept of wavelet direction
+
+map:direction_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "direction_@@waveletfiltertable.waveletdirection@@";
+	.
+
+map:direction_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:direction_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "waveletfiltertable.waveletdirection";
+	d2rq:translateWith map:directionMapping;
+	.
+
+map:directionMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "LLL"; d2rq:rdfValue ro:NTRN;		];
+    d2rq:translation [ d2rq:databaseValue "LLH"; d2rq:rdfValue ro:6FPA;		];
+    d2rq:translation [ d2rq:databaseValue "LHL"; d2rq:rdfValue ro:76ZU; 		];
+    d2rq:translation [ d2rq:databaseValue "LHH"; d2rq:rdfValue ro:CJ43; 		];
+    d2rq:translation [ d2rq:databaseValue "HLL"; d2rq:rdfValue ro:RZ96; 		];
+    d2rq:translation [ d2rq:databaseValue "HLH"; d2rq:rdfValue ro:UFRT; 		];
+    d2rq:translation [ d2rq:databaseValue "HHL"; d2rq:rdfValue ro:S7CG; 		];
+    d2rq:translation [ d2rq:databaseValue "HHH"; d2rq:rdfValue ro:LCNJ; 		];
+    .
+
+# predicate has_direction
+
+map:direction_predicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:filterparam_obj;
+	d2rq:refersToClassMap map:direction_obj;
+	d2rq:property ro:P00033;
+	.
+
+
+

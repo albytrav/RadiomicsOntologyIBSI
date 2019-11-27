@@ -1,0 +1,52 @@
+### D2RQ MAPPING SCRIPT FOR THE GLRLM PARAMETER TABLE ####
+
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+#Table GLRLM parameters
+
+map:glrlmpar_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "glrlmpar_@@glrlmtable.glrlmpar@@";
+	.
+
+map:distancew_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "glrlmdistancew_@@glrlmtable.distancefunction@@";
+	.
+
+map:distancew_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:distancew_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "glrlmtable.distancefunction";
+	d2rq:translateWith map:distancewMapping;
+	.
+
+map:distancewMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "Inverse"; d2rq:rdfValue ro:UR3S; ];
+	d2rq:translation [ d2rq:databaseValue "Exponential"; d2rq:rdfValue ro:APGT; ];
+	.
+
+map:definedistance a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:glrlmpar_obj;
+    d2rq:refersToClassMap map:distancew_obj;
+	d2rq:property ro:P00009;
+	.

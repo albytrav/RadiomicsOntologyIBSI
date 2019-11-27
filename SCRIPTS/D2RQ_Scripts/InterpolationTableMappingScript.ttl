@@ -1,0 +1,263 @@
+### D2RQ MAPPING SCRIPT FOR THE INTERPOLATION PARAMETER TABLE ####
+
+## WE INCLUDE THE ONTOLOGIES WE NEED
+
+@prefix map: <> .
+@prefix roo:<http://www.cancerdata.org/roo/>.
+@prefix ncit:<http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix ro:<http://www.radiomics.org/RO/>.
+
+
+# we need to specify where are our data. We have different tables
+
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "org.postgresql.Driver";
+	d2rq:jdbcDSN "jdbc:postgresql://localhost:5432/Radiomics_Ontology";
+	d2rq:username "postgres";
+	d2rq:password "postgres";
+	.
+
+
+# TABLE INTERPOLATION
+
+#mapping the concept of interpolation parameter (SAME URI AS IN FEATURE PARAMETER SPACE TABLE)
+
+map:interpolationparameter_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "interpolation_@@interpolationtable.interpolation@@";
+	d2rq:class ro:VTM2;
+	.
+
+
+# mapping the concept of interpolation method
+
+map:imagevolumemethod_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "volumeinterpolationmethod_@@interpolationtable.imagevolumemethod@@";
+	d2rq:condition "interpolationtable.imagevolumemethod IS NOT NULL";
+	.
+
+map:imagevolumemethod_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolumemethod_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "interpolationtable.imagevolumemethod";
+	d2rq:translateWith map:volumemethodMapping;
+	.
+
+#translation table
+
+map:volumemethodMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "NNB"; d2rq:rdfValue ro:EY9L; ];
+	d2rq:translation [ d2rq:databaseValue "LIN"; d2rq:rdfValue ro:X13G; ];
+	d2rq:translation [ d2rq:databaseValue "CCI"; d2rq:rdfValue ro:NV3D; ];
+	d2rq:translation [ d2rq:databaseValue "CSI"; d2rq:rdfValue ro:2I2N; ];
+	.
+
+
+#has_interpolation_method
+
+map:hasvolumemethod a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:interpolationparameter_obj;
+	d2rq:refersToClassMap map:imagevolumemethod_obj;
+	d2rq:property ro:P09537; #has_interpolation_method
+	.
+
+
+# map the predicate has_value
+
+map:valuepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolumemethod_obj;
+	d2rq:property roo:100042; #HAS VALUE
+    d2rq:sqlExpression "interpolationtable.interpolationvalue";
+	d2rq:datatype xsd:double;
+    .
+
+
+
+#map the concept of unit
+
+map:unit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "unit_@@interpolationtable.interpolationunit@@";
+  	.
+
+map:unit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:unit_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "interpolationtable.interpolationunit";
+	d2rq:translateWith map:unitMapping;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+map:unitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+  
+
+#mapping the predicate has_unit. It is a D2rq PropertyBridge
+
+
+map:unitpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolumemethod_obj;
+    d2rq:property roo:100027; #HAS UNIT
+	d2rq:refersToClassMap map:unit_obj;
+	.
+
+
+
+
+#mapping concept grey level round
+
+map:glround_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "glround_@@interpolationtable.interpolation@@";
+	d2rq:class ro:G6RO;
+	d2rq:condition "interpolationtable.glroundvalue IS NOT NULL";
+	.
+
+
+
+# mapping has value
+
+map:glrvaluepredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:glround_obj;
+	d2rq:property roo:100042; #HAS VALUE
+    d2rq:sqlExpression "interpolationtable.glroundvalue";
+	d2rq:datatype xsd:double;
+    .
+
+
+#map the concept of glround unit
+
+map:glroundunit_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "unit_@@interpolationtable.glroundunit@@";
+	.
+
+map:glroundunit_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:glroundunit_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "interpolationtable.glroundunit";
+	d2rq:translateWith map:glroundunitunitMapping;
+	.
+
+#mapping the translations between unit names and concept in the ontology
+
+    map:glroundunitunitMapping a d2rq:TranslationTable;
+    d2rq:translation [ d2rq:databaseValue "cm"; d2rq:rdfValue ro:I008; ];
+    d2rq:translation [ d2rq:databaseValue "mm"; d2rq:rdfValue ro:I0020; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2)"; d2rq:rdfValue ro:I0027; ];
+    d2rq:translation [ d2rq:databaseValue "cm(2)"; d2rq:rdfValue ro:I0024; ];
+    d2rq:translation [ d2rq:databaseValue "m(2)"; d2rq:rdfValue ro:I0025;];
+    d2rq:translation [ d2rq:databaseValue "mm(3)"; d2rq:rdfValue ro:I0011; ];
+    d2rq:translation [ d2rq:databaseValue "cm(3)"; d2rq:rdfValue ro:I0025; ];
+    d2rq:translation [ d2rq:databaseValue "SUV"; d2rq:rdfValue ro:I98213; ];
+    d2rq:translation [ d2rq:databaseValue "HU"; d2rq:rdfValue ro:I0012; ];
+    d2rq:translation [ d2rq:databaseValue "SUV(2)"; d2rq:rdfValue ro:I98683; ];
+    d2rq:translation [ d2rq:databaseValue "HU(2)"; d2rq:rdfValue ro:I9482135; ];
+    d2rq:translation [ d2rq:databaseValue "mm(2/3)"; d2rq:rdfValue ro:I9286638; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*SUV"; d2rq:rdfValue ro:I0883245; ];
+    d2rq:translation [ d2rq:databaseValue "mm(3)*HU"; d2rq:rdfValue ro:I9826512313; ];
+    .
+    
+
+#mapping the predicate has_unit. It is a D2rq PropertyBridge
+
+
+map:glroundunitpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:glround_obj;
+    d2rq:property roo:100027; 
+	d2rq:refersToClassMap map:glroundunit_obj;
+ 	.
+
+
+#mapping predicate has_GreyLevelRound
+
+map:glroundpredicate a d2rq:PropertyBridge;
+    d2rq:belongsToClassMap map:imagevolumemethod_obj;
+	d2rq:refersToClassMap map:glround_obj;
+	d2rq:property ro:P00043;
+	.
+
+
+#mapping concept roi mask method
+
+map:roimaskmethod_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "roimethod_@@interpolationtable.roimethod@@";
+	d2rq:condition "interpolationtable.roimethod IS NOT NULL";
+	.
+
+map:roimaskmethod_uri a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:roimaskmethod_obj;
+	d2rq:property rdf:type;
+	d2rq:uriColumn "interpolationtable.roimethod";
+	d2rq:translateWith map:roimaskmethodMapping;
+	.
+
+#translation table
+
+map:roimaskmethodMapping a d2rq:TranslationTable;
+	d2rq:translation [ d2rq:databaseValue "NNB"; d2rq:rdfValue ro:EY9L; ];
+	d2rq:translation [ d2rq:databaseValue "LIN"; d2rq:rdfValue ro:X13G; ];
+	d2rq:translation [ d2rq:databaseValue "CCI"; d2rq:rdfValue ro:NV3D; ];
+	d2rq:translation [ d2rq:databaseValue "CSI"; d2rq:rdfValue ro:2I2N; ];
+	.
+
+
+#has_method
+
+map:hasroimaskmethod a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:imagevolumemethod_obj;
+	d2rq:refersToClassMap map:roimaskmethod_obj;
+	d2rq:property ro:P00061;
+	.
+
+
+#mapping concept partial volume cut off
+
+map:pvcutoff_obj a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "pvcut_@@interpolationtable.pvcutoff@@";
+	d2rq:class ro:005042;
+	d2rq:condition "interpolationtable.pvcutoff IS NOT NULL";
+	.
+
+
+
+# mapping has value
+
+map:pvcutoffvalue a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:pvcutoff_obj;
+	d2rq:property roo:100042;
+    d2rq:sqlExpression "interpolationtable.pvcutoff";
+	d2rq:datatype xsd:double;
+    .
+
+#mapping the predicate has_partial_volume_cutoff
+
+map:pvcutoffpredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:roimaskmethod_obj;
+	d2rq:refersToClassMap map:pvcutoff_obj;
+	d2rq:property ro:P00074;
+	.
+
+
