@@ -14,8 +14,8 @@ dbname = 'Radiomics_Ontology'
 user = 'postgres'
 password = 'postgres'
 schema = 'public'
-featuretable_splits = 64 # Use 0 to keep only one table. Use a positive number to split it into multiple tables named "featuretable1", "featuretable2", etc.
-
+#featuretable_splits = 64 # Use 0 to keep only one table. Use a positive number to split it into multiple tables named "featuretable1", "featuretable2", etc.
+featuretable_splits = 0
 # B. CONNECTION TO THE DATABASE
 conn = psycopg2.connect(f"host={host} dbname={dbname} user={user} password={password} port=5432")
 cur = conn.cursor()
